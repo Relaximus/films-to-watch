@@ -8,17 +8,31 @@ import org.hibernate.collection.internal.PersistentBag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
-public class FilmsApplication implements CommandLineRunner{
+@EnableOAuth2Sso
+public class FilmsApplication extends WebSecurityConfigurerAdapter implements CommandLineRunner{
 	@Autowired
 	FilmRepository rep;
 	@Autowired
@@ -28,6 +42,26 @@ public class FilmsApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
 		SpringApplication.run(FilmsApplication.class, args);
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+				.antMatcher("/**")
+				.authorizeRequests().anyRequest().authenticated();
+	}
+
+	@Bean
+	public OAuth2RestTemplate oauth2RestTemplate(OAuth2ProtectedResourceDetails resource, @Qualifier("oauth2ClientContext") OAuth2ClientContext context) {
+		return new OAuth2RestTemplate(resource, context);
+	}
+	
+	@Bean
+	public AuthoritiesExtractor authoritiesExtractor(OAuth2RestOperations template) {
+		return map -> {
+			log.info(map.toString());
+			return AuthorityUtils.commaSeparatedStringToAuthorityList("GOOGLE_USER");
+		};
 	}
 
 	@Override

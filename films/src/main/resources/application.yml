@@ -1,0 +1,12 @@
+security:
+  oauth2:
+    sso:
+       loginPath: /login/google
+    client:
+      clientId: 992354106198-s4t4iki6u04rav1ukjr8tohu67gi9916.apps.googleusercontent.com
+      clientSecret: mTcm56jsvbk4ZiLNigusGXrc
+      accessTokenUri: https://accounts.google.com/o/oauth2/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+      scope: openid profile
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
