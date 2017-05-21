@@ -1,12 +1,28 @@
-security:
-  oauth2:
-    sso:
-       loginPath: /login/google
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+google:
     client:
       clientId: 992354106198-s4t4iki6u04rav1ukjr8tohu67gi9916.apps.googleusercontent.com
       clientSecret: mTcm56jsvbk4ZiLNigusGXrc
       accessTokenUri: https://accounts.google.com/o/oauth2/token
       userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
       scope: openid profile
+#      use-current-uri:
+#      pre-established-redirect-uri:
+#      registered-redirect-uri:
     resource:
       userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+
+github:
+  client:
+    clientId: b66375d9aa6afd2dd87c
+    clientSecret: 2cbc71d110d9d3e02a18a33be26f73bf57cbc6ee
+    accessTokenUri: https://github.com/login/oauth/access_token
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://api.github.com/user
